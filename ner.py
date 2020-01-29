@@ -47,19 +47,19 @@ skip_list = ["Golden", "Globes", "Golden Globes", "Host", "Hollywood", "Golden G
 "Best", "Comedy", "Best Picture", "Best Motion Picture", "Actor", "Actress", "Film", 
 "Motion Picture", "Motion", "Performance", "Drama", "Comedy", "Director", "Musical", 
 "Best Performance", "Annual Golden Globe Awards", "Best Director", "BEST PICTURE", 
-"Look", "Btw", "’", "2015", "2016", "2017", "2018", "2019"]
+"Look", "Btw", "’", "2015", "2016", "2017", "2018", "2019", "Best Actor", "Best Actress"]
 
-def getHost(relevant_list):
+def getAwardWinnerPerson(award, title, relevant_list):
 	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(10)
+	most_occur = aCounter.most_common(20)
 	results = []
 	for word in most_occur:
 		if word[0] not in skip_list and not word[0].isnumeric():
 			results.append(word[0])
-	host = results[0]
-	print('Host:', host)
-	# print(most_occur)
-	return host
+
+	best = results[0]
+	print(title, best)
+
 
 def getBestDramaPicture(relevant_list):
 	aCounter = Counter(relevant_list)
@@ -73,28 +73,6 @@ def getBestDramaPicture(relevant_list):
 	print('Best Picture - Drama:', best)
 	# print(results)
 
-def getBestDramaActor(relevant_list):
-	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(20)
-	results = []
-	for word in most_occur:
-		if word[0] not in skip_list and not word[0].isnumeric():
-			results.append(word[0])
-
-	best = results[0]
-	print('Best Performance by Actor - Drama:', best)
-
-def getBestDramaActress(relevant_list):
-	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(20)
-	results = []
-	for word in most_occur:
-		if word[0] not in skip_list and not word[0].isnumeric():
-			results.append(word[0])
-
-	best = results[0]
-	print('Best Performance by Actress - Drama:', best)
-
 def getBestComedyPicture(relevant_list):
 	aCounter = Counter(relevant_list)
 	most_occur = aCounter.most_common(20)
@@ -105,39 +83,6 @@ def getBestComedyPicture(relevant_list):
 
 	best = results[0]
 	print('Best Picture - Comedy:', best)
-
-def getBestSupportingRole(relevant_list):
-	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(20)
-	results = []
-	for word in most_occur:
-		if word[0] not in skip_list and not word[0].isnumeric():
-			results.append(word[0])
-
-	best = results[0]
-	print('Best Actor in Supporting Role:', best)
-
-def getBestSupportingActress(relevant_list):
-	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(20)
-	results = []
-	for word in most_occur:
-		if word[0] not in skip_list and not word[0].isnumeric():
-			results.append(word[0])
-
-	best = results[0]
-	print('Best Actress in Supporting Role:', best)
-
-def getBestDirector(relevant_list):
-	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(20)
-	results = []
-	for word in most_occur:
-		if word[0] not in skip_list and not word[0].isnumeric():
-			results.append(word[0])
-
-	best = results[0]
-	print('Best Director:', best)
 
 
 master_name_list = []
@@ -153,10 +98,13 @@ best_supporting_role_list = []
 best_supporting_actress_list = []
 best_director_list = []
 
+best_comedy_actress_list = []
+best_comedy_actor_list = []
+
 best_drama_actor_list = []
 best_drama_actress_list = []
 
-for tweet in df.head(100000).iterrows():
+for tweet in df.head(60000).iterrows():
 	text = tweet[1].text
 
 	# pull out the urls and remove them
@@ -213,55 +161,60 @@ for tweet in df.head(100000).iterrows():
 
 	if "best" in text and ("director" in text or "best director" in text):
 		best_director_list += nouns
+
+	if "actress" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
+		best_comedy_actress_list += nouns
+
+	if "actor" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
+		best_comedy_actor_list += nouns
 		# print (text, '\n')
 
+print ('\n')
 # get the most common name in the list
-getHost(master_host_list)
-# 
+getAwardWinnerPerson("", "Host:", master_host_list)
+
 getBestDramaPicture(best_drama_picture_list)
 getBestComedyPicture(best_comedy_picture_list)
-getBestSupportingRole(best_supporting_role_list)
-getBestSupportingActress(best_supporting_actress_list)
-getBestDirector(best_director_list)
 
-getBestDramaActress(best_drama_actress_list)
-getBestDramaActor(best_drama_actor_list)
+getAwardWinnerPerson("", "Best Actor in a Supporting Role:", best_supporting_role_list)
+getAwardWinnerPerson("", "Best Actress in a Supporting Role:", best_supporting_actress_list)
 
-# Pass the split_it list to instance of Counter class. 
-Counter1 = Counter(master_name_list)
-most_occur = Counter1.most_common(10)
-# print(most_occur)
+getAwardWinnerPerson("", "Best Director:", best_director_list)
 
-Counter2 = Counter(master_award_list)
-most_occur = Counter2.most_common(10)
-# print(most_occur)
+getAwardWinnerPerson("", "Best Actress - Drama:", best_drama_actress_list)
+getAwardWinnerPerson("", "Best Actor - Drama:", best_drama_actor_list)
 
-Counter3 = Counter(master_winner_list)
-most_occur = Counter3.most_common(10)   
-# print(most_occur)
-
-Counter4 = Counter(master_nominee_list)
-most_occur = Counter4.most_common(10) 
-# print(most_occur)
+getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", best_comedy_actress_list)
+getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", best_comedy_actor_list)
 
 
+from imdb import IMDb
 
+# create an instance of the IMDb class
+ia = IMDb()
+top_movies = ia.get_top250_movies()
+print ('Got top movies')
+recent_top_movies = []
+years = [2013, 2014, 2015, 2016, 2017, 2018, 2019]
 
-
-# from imdb import IMDb
-
-# # create an instance of the IMDb class
-# ia = IMDb()
-# top_movies = ia.get_top250_movies()
-
-# for movie in top_movies:
-# 	if (movie['year'] == 2016):
-# 		print (movie['title'], movie['year'])
+for movie in top_movies:
+	if (movie['year'] in years):
+		recent_top_movies.append(movie)
+		print (movie['title'], movie['year'])
 
 # movies = ia.search_keyword('user_rating=7.0%2C')
 # print (movies)
 
+actors = []
+print ('Getting actors\n')
 
-# def getHost(text):
-# 	if 'host' in text and 'next year' not in text:
+for movie in recent_top_movies:
+	the_movie = ia.get_movie(movie.movieID)
+	if the_movie:
+		cast = the_movie.get('cast')
+		topActors = 8
+		for actor in cast[0:topActors]:
+			actors.append(actor['name'])
+
+print (actors)
 
