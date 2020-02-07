@@ -16,9 +16,7 @@ def preprocess(sent):
     sent = nltk.pos_tag(sent)
     return sent
 
-
 def getProperNouns(text):
-
 	names = []
 	tokenized = preprocess(text)
 	for word in tokenized:
@@ -47,7 +45,8 @@ skip_list = ["Golden", "Globes", "Golden Globes", "Host", "Hollywood", "Golden G
 "Best", "Comedy", "Best Picture", "Best Motion Picture", "Actor", "Actress", "Film", 
 "Motion Picture", "Motion", "Performance", "Drama", "Comedy", "Director", "Musical", 
 "Best Performance", "Annual Golden Globe Awards", "Best Director", "BEST PICTURE", 
-"Look", "Btw", "’", "2015", "2016", "2017", "2018", "2019", "Best Actor", "Best Actress"]
+"Look", "Btw", "’", "2015", "2016", "2017", "2018", "2019", "Best Actor", "Best Actress",
+ "Golden Globes 2020", "2020 Golden Globes"]
 
 def getAwardWinnerPerson(award, title, relevant_list):
 	aCounter = Counter(relevant_list)
@@ -85,6 +84,7 @@ def getBestComedyPicture(relevant_list):
 	print('Best Picture - Comedy:', best)
 
 
+host_list = []
 master_name_list = []
 master_award_list = []
 master_nominee_list = []
@@ -103,6 +103,8 @@ best_comedy_actor_list = []
 
 best_drama_actor_list = []
 best_drama_actress_list = []
+
+best_dressed_list = []
 
 for tweet in df.head(60000).iterrows():
 	text = tweet[1].text
@@ -126,7 +128,6 @@ for tweet in df.head(60000).iterrows():
 	master_name_list += nouns
 
 	text = text.lower()
-	# print (answer,'\n')
 
 	# build up our lists
 	if "winner" in text:
@@ -139,7 +140,7 @@ for tweet in df.head(60000).iterrows():
 		master_award_list += nouns
 
 	if "host" in text:
-		master_host_list += nouns
+		host_list += nouns
 
 	if "drama" in text and ("best motion picture" in text or "best picture" in text):
 		best_drama_picture_list += nouns
@@ -167,11 +168,14 @@ for tweet in df.head(60000).iterrows():
 
 	if "actor" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
 		best_comedy_actor_list += nouns
+
+	if "dressed" in text and "best" in text:
+		best_dressed_list += nouns
 		# print (text, '\n')
 
 print ('\n')
 # get the most common name in the list
-getAwardWinnerPerson("", "Host:", master_host_list)
+getAwardWinnerPerson("", "Host:", host_list)
 
 getBestDramaPicture(best_drama_picture_list)
 getBestComedyPicture(best_comedy_picture_list)
@@ -187,6 +191,8 @@ getAwardWinnerPerson("", "Best Actor - Drama:", best_drama_actor_list)
 getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", best_comedy_actress_list)
 getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", best_comedy_actor_list)
 
+getAwardWinnerPerson("", "Best Dressed:", best_dressed_list)
+
 
 from imdb import IMDb
 
@@ -195,19 +201,13 @@ ia = IMDb()
 top_movies = ia.get_top250_movies()
 print ('Got top movies')
 recent_top_movies = []
-years = [2013, 2014, 2015, 2016, 2017, 2018, 2019]
 
 for movie in top_movies:
-	if (movie['year'] in years):
+	if (movie['year'] in [2013, 2014, 2015, 2016, 2017, 2018, 2019]):
 		recent_top_movies.append(movie)
-		print (movie['title'], movie['year'])
-
-# movies = ia.search_keyword('user_rating=7.0%2C')
-# print (movies)
 
 actors = []
 print ('Getting actors\n')
-
 for movie in recent_top_movies:
 	the_movie = ia.get_movie(movie.movieID)
 	if the_movie:
@@ -216,5 +216,11 @@ for movie in recent_top_movies:
 		for actor in cast[0:topActors]:
 			actors.append(actor['name'])
 
-print (actors)
+# print (recent_top_movies)
+# print (actors)
 
+
+
+# textblob
+# TextBlob("I loved it")
+# blob.sent.sentiment
