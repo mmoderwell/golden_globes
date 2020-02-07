@@ -57,7 +57,10 @@ def getAwardWinnerPerson(award, title, relevant_list):
 		if word[0] not in skip_list and not word[0].isnumeric():
 			results.append(word[0])
 
-	best = results[0]
+	try:
+		best = results[0]
+	except:
+		best = 'Unknown'
 	print(title, best)
 	return best
 
@@ -69,83 +72,60 @@ def getAwardWinnerMovie(award, title, relevant_list):
 		if word[0] not in skip_list:
 			results.append(word[0])
 
-	best = results[0]
+	try:
+		best = results[0]
+	except:
+		best = 'Unknown'
 	print(title, best)
 	return best
 
 lists = {}
+
+awards = [
+	"best performance by an actor in a television series - drama",
+	"best performance by an actress in a television series - drama",
+	"best performance by an actress in a motion picture - drama",
+	"best performance by an actor in a motion picture - drama",
+	"best performance by an actress in a mini-series or motion picture made for television",
+	"best performance by an actor in a mini-series or motion picture made for television",
+	"best performance by an actress in a supporting role in a series, mini-series or motion picture made for television",
+	"best performance by an actor in a supporting role in a series, mini-series or motion picture made for television",
+	"best performance by an actress in a supporting role in a motion picture",
+	"best performance by an actor in a supporting role in a motion picture",
+	"best performance by an actress in a television series - comedy or musical",
+	"best performance by an actor in a television series - comedy or musical",
+	"best performance by an actor in a motion picture - comedy or musical",
+	"best performance by an actress in a motion picture - comedy or musical",
+	"best mini-series or motion picture made for television",
+	"best director - motion picture",
+	"best screenplay - motion picture",
+	"best original score - motion picture",
+	"best foreign language film",
+	"best animated feature film",
+	"best original song - motion picture",
+	"cecil b. demille award",
+	"best motion picture - drama",
+	"best motion picture - comedy or musical",
+	"best television series - drama",
+	"best television series - comedy or musical"
+]
+
 # Host list
 lists["host"] = {}
-# Best director lists
-lists["best director - motion picture"] = {}
-# Random best lists
-lists["best screenplay - motion picture"] = {}
-lists["best original score - motion picture"] = {}
-lists["best foreign language film"] = {}
-lists["best animated feature film"] = {}
-lists["best original song - motion picture"] = {}
-# 
-lists["cecil b. demille award"] = {}
-# 
-lists["best motion picture - drama"] = {}
-lists["best motion picture - comedy or musical"] = {}
+lists["host"]["winner"] = []
 
-lists["best television series - drama"] = {}
-lists["best television series - comedy or musical"] = {}
-# 
-lists["best mini-series or motion picture made for television"] = {}
+# Initialize the lists for each award
+for award in awards:
+	lists[award] = {}
+	# Initialize all the different kinds of fields for each award
+	lists[award]["winner"] = []
+	lists[award]["nominees"] = []
+	lists[award]["presenters"] = []
 
-# Best performance lists
-lists["best performance by an actress in a motion picture - comedy or musical"] = {}
-lists["best performance by an actor in a motion picture - comedy or musical"] = {}
-
-lists["best performance by an actor in a television series - comedy or musical"] = {}
-lists["best performance by an actress in a television series - comedy or musical"] = {}
-
-lists["best performance by an actor in a supporting role in a motion picture"] = {}
-lists["best performance by an actress in a supporting role in a motion picture"] = {}
-
-lists["best performance by an actor in a supporting role in a series, mini-series or motion picture made for television"] = {}
-lists["best performance by an actress in a supporting role in a series, mini-series or motion picture made for television"] = {}
-
-lists["best performance by an actor in a mini-series or motion picture made for television"] = {}
-lists["best performance by an actress in a mini-series or motion picture made for television"] = {}
-
-lists["best performance by an actor in a motion picture - drama"] = {}
-lists["best performance by an actress in a motion picture - drama"] = {}
-
-lists["best performance by an actor in a television series - drama"] = {}
-lists["best performance by an actress in a television series - drama"] = {}
-
-# Initialize all the different kinds of fields for each award
-for key in lists:
-	lists[key]["winner"] = []
-	lists[key]["nominees"] = []
-	lists[key]["presenters"] = []
-
-
-master_name_list = []
-master_award_list = []
-master_nominee_list = []
-master_winner_list = []
-master_host_list = []
-
-# Awards lists
-best_drama_picture_list = []
-best_comedy_picture_list = []
-best_supporting_role_list = []
-best_supporting_actress_list = []
-best_director_list = []
-
-best_comedy_actress_list = []
-best_comedy_actor_list = []
-
-best_drama_actor_list = []
-best_drama_actress_list = []
 
 best_dressed_list = []
 
-for tweet in df.head(6000).itertuples():
+for tweet in df.head(10000).itertuples():
 	text = tweet[3]
 
 	# pull out the urls and remove them
@@ -164,59 +144,41 @@ for tweet in df.head(6000).itertuples():
 	
 	# get the proper nouns for the tweet
 	nouns = getProperNouns(text)
-	master_name_list += nouns
 
 	text = text.lower()
 
-	# build up our lists
-	# if "winner" in text:
-	# 	master_winner_list += nouns
-
-	# if "nominee" in text:
-	# 	master_nominee_list += nouns
-
-	# if "award" in text:
-	# 	master_award_list += nouns
-
-# best screenplay - motion picture
-# best director - motion picture
-# best original score - motion picture
-# best motion picture - drama
-# best original song - motion picture
-# best motion picture - comedy or musical
-# best animated feature film
-
-# best foreign language film
-# best mini-series or motion picture made for television
-# cecil b. demille award
-
-# best television series - drama
-# best television series - comedy or musical
-
-# best performance by an actress in a motion picture - comedy or musical
-# best performance by an actor in a motion picture - comedy or musical
-
-# best performance by an actress in a television series - comedy or musical
-# best performance by an actor in a television series - comedy or musical
-
-# best performance by an actor in a supporting role in a motion picture
-# best performance by an actress in a supporting role in a motion picture
-
-# best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
-# best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
-
-# best performance by an actress in a motion picture - drama
-# best performance by an actor in a motion picture - drama
-
-# best performance by an actress in a television series - drama
-# best performance by an actor in a television series - drama
-
-# best performance by an actor in a mini-series or motion picture made for television
-# best performance by an actress in a mini-series or motion picture made for television
-
+	# Build up the lists
 	if all(word in text for word in ["host"]):
 		lists["host"]["winner"] += nouns
 
+	if all(word in text for word in []) and any(word in text for word in ["winner", "awarded", "cecil", "demille"]):
+		lists["cecil b. demille award"]["winner"] += nouns
+
+	if all(word in text for word in ["screenplay", "best"]) and any(word in text for word in ["motion", "picture", "winner", "motion", "picture"]):
+		lists["best screenplay - motion picture"]["winner"] += nouns
+
+	if all(word in text for word in ["original", "score", "best"]) and any(word in text for word in ["motion", "picture", "winner", "awarded"]):
+		lists["best original score - motion picture"]["winner"] += nouns
+
+	if all(word in text for word in ["original", "song", "best"]) and any(word in text for word in ["motion", "picture", "winner", "awarded"]):
+		lists["best original song - motion picture"]["winner"] += nouns
+
+	if all(word in text for word in ["animated", "best"]) and any(word in text for word in ["film", "winner", "feature"]):
+		lists["best animated feature film"]["winner"] += nouns
+
+	if all(word in text for word in ["foreign", "best", "film"]) and any(word in text for word in ["winner", "language"]):
+		lists["best foreign language film"]["winner"] += nouns
+
+	if all(word in text for word in ["best"]) and any(word in text for word in ["mini", "tv", "television", "winner", "mini-series"]):
+		lists["best mini-series or motion picture made for television"]["winner"] += nouns
+
+	if all(word in text for word in ["drama", "best", "series"]) and any(word in text for word in ["tv", "television", "winner"]):
+		lists["best television series - drama"]["winner"] += nouns
+
+	# if all(word in text for word in [""]) and any(word in text for word in [""]):
+	# 	lists[""]["winner"] += nouns
+
+		
 	if all(word in text for word in ["drama"]) and any(word in text for word in ["best motion picture", "best picture"]):
 		lists["best motion picture - drama"]["winner"] += nouns
 
@@ -246,52 +208,22 @@ for tweet in df.head(6000).itertuples():
 		# print (text, '\n')
 
 results = {}
-
 results["Host"] = getAwardWinnerPerson("", "Host:", lists["host"]["winner"])
 
-results["best motion picture - drama"] = {}
-results["best motion picture - drama"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Drama:", lists["best motion picture - drama"]["winner"])
-results["best motion picture - drama"]["Presenters"] = []
-results["best motion picture - drama"]["Nominees"] = []
-
-results["best motion picture - comedy or musical"] = {}
-results["best motion picture - comedy or musical"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Comedy:", lists["best motion picture - comedy or musical"]["winner"])
-results["best motion picture - comedy or musical"]["Presenters"] = []
-results["best motion picture - comedy or musical"]["Nominees"] = []
-
-results["best performance by an actress in a supporting role in a motion picture"] = {}
-results["best performance by an actress in a supporting role in a motion picture"]["Winner"] = getAwardWinnerPerson("", "Best Actress in a Supporting Role:", lists["best performance by an actress in a supporting role in a motion picture"]["winner"])
-results["best performance by an actress in a supporting role in a motion picture"]["Presenters"] = []
-results["best performance by an actress in a supporting role in a motion picture"]["Nominees"] = []
-
-results["best performance by an actor in a supporting role in a motion picture"] = {}
-results["best performance by an actor in a supporting role in a motion picture"]["Winner"] = getAwardWinnerPerson("", "Best Actor in a Supporting Role:", lists["best performance by an actor in a supporting role in a motion picture"]["winner"])
-results["best performance by an actor in a supporting role in a motion picture"]["Presenters"] = []
-results["best performance by an actor in a supporting role in a motion picture"]["Nominees"] = []
-
-results["best director - motion picture"] = {}
-results["best director - motion picture"]["Winner"] = getAwardWinnerPerson("", "Best Director:", lists["best director - motion picture"]["winner"])
-results["best director - motion picture"]["Presenters"] = []
-results["best director - motion picture"]["Nominees"] = []
-
-results["best performance by an actress in a motion picture - drama"] = {}
-results["best performance by an actress in a motion picture - drama"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Drama:", lists["best performance by an actress in a motion picture - drama"]["winner"])
-results["best performance by an actress in a motion picture - drama"]["Presenters"] = []
-results["best performance by an actress in a motion picture - drama"]["Nominees"] = []
-
-results["best performance by an actor in a motion picture - drama"] = {}
-results["best performance by an actor in a motion picture - drama"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Drama:", lists["best performance by an actor in a motion picture - drama"]["winner"])
-results["best performance by an actor in a motion picture - drama"]["Presenters"] = []
-results["best performance by an actor in a motion picture - drama"]["Nominees"] = []
-
-results["best performance by an actress in a motion picture - comedy or musical"] = {}
-results["best performance by an actress in a motion picture - comedy or musical"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", lists["best performance by an actress in a motion picture - comedy or musical"]["winner"])
-results["best performance by an actress in a motion picture - comedy or musical"]["Nominees"] = []
-
-results["best performance by an actor in a motion picture - comedy or musical"] = {}
-results["best performance by an actor in a motion picture - comedy or musical"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", lists["best performance by an actor in a motion picture - comedy or musical"]["winner"])
-results["best performance by an actor in a motion picture - comedy or musical"]["Presenters"] = []
-results["best performance by an actor in a motion picture - comedy or musical"]["Nominees"] = []
+# Assign awards to the results dict
+for award in awards:
+	# person awardee
+	if (any(word in award for word in ["actor", "actress"])):
+		results[award] = {}
+		results[award]["Winner"] = getAwardWinnerPerson("", f"{award}:", lists[award]["winner"])
+		results[award]["Presenters"] = []
+		results[award]["Nominees"] = []
+	# movie or tv show awardee
+	else:
+		results[award] = {}
+		results[award]["Winner"] = getAwardWinnerMovie("", f"{award}:", lists[award]["winner"])
+		results[award]["Presenters"] = []
+		results[award]["Nominees"] = []
 
 
 # best screenplay - motion picture
