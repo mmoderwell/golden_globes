@@ -1,6 +1,7 @@
 import pandas as pd
 import re
 import nltk
+import json
 
 # Python program to find the k most frequent words from data set 
 from collections import Counter 
@@ -58,9 +59,9 @@ def getAwardWinnerPerson(award, title, relevant_list):
 
 	best = results[0]
 	print(title, best)
+	return best
 
-
-def getBestDramaPicture(relevant_list):
+def getAwardWinnerMovie(award, title, relevant_list):
 	aCounter = Counter(relevant_list)
 	most_occur = aCounter.most_common(20)
 	results = []
@@ -69,19 +70,8 @@ def getBestDramaPicture(relevant_list):
 			results.append(word[0])
 
 	best = results[0]
-	print('Best Picture - Drama:', best)
-	# print(results)
-
-def getBestComedyPicture(relevant_list):
-	aCounter = Counter(relevant_list)
-	most_occur = aCounter.most_common(20)
-	results = []
-	for word in most_occur:
-		if word[0] not in skip_list:
-			results.append(word[0])
-
-	best = results[0]
-	print('Best Picture - Comedy:', best)
+	print(title, best)
+	return best
 
 
 host_list = []
@@ -106,8 +96,8 @@ best_drama_actress_list = []
 
 best_dressed_list = []
 
-for tweet in df.head(60000).iterrows():
-	text = tweet[1].text
+for tweet in df.head(6000).itertuples():
+	text = tweet[3]
 
 	# pull out the urls and remove them
 	text = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', text)
@@ -173,54 +163,62 @@ for tweet in df.head(60000).iterrows():
 		best_dressed_list += nouns
 		# print (text, '\n')
 
-print ('\n')
-# get the most common name in the list
-getAwardWinnerPerson("", "Host:", host_list)
+results = {}
 
-getBestDramaPicture(best_drama_picture_list)
-getBestComedyPicture(best_comedy_picture_list)
+results["Host"] = getAwardWinnerPerson("", "Host:", host_list)
 
-getAwardWinnerPerson("", "Best Actor in a Supporting Role:", best_supporting_role_list)
-getAwardWinnerPerson("", "Best Actress in a Supporting Role:", best_supporting_actress_list)
+results["Best Motion Picture - Drama"] = {}
+results["Best Motion Picture - Drama"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Drama:", best_drama_picture_list)
+results["Best Motion Picture - Drama"]["Presenters"] = []
+results["Best Motion Picture - Drama"]["Nominees"] = []
 
-getAwardWinnerPerson("", "Best Director:", best_director_list)
+results["Best Motion Picture - Comedy"] = {}
+results["Best Motion Picture - Comedy"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Comedy:", best_comedy_picture_list)
+results["Best Motion Picture - Comedy"]["Presenters"] = []
+results["Best Motion Picture - Comedy"]["Nominees"] = []
 
-getAwardWinnerPerson("", "Best Actress - Drama:", best_drama_actress_list)
-getAwardWinnerPerson("", "Best Actor - Drama:", best_drama_actor_list)
+results["Best Actress - Supporting Role"] = {}
+results["Best Actress - Supporting Role"]["Winner"] = getAwardWinnerPerson("", "Best Actress in a Supporting Role:", best_supporting_actress_list)
+results["Best Actress - Supporting Role"]["Presenters"] = []
+results["Best Actress - Supporting Role"]["Nominees"] = []
 
-getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", best_comedy_actress_list)
-getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", best_comedy_actor_list)
+results["Best Actor - Supporting Role"] = {}
+results["Best Actor - Supporting Role"]["Winner"] = getAwardWinnerPerson("", "Best Actor in a Supporting Role:", best_supporting_role_list)
+results["Best Actor - Supporting Role"]["Presenters"] = []
+results["Best Actor - Supporting Role"]["Nominees"] = []
+
+results["Best Director"] = {}
+results["Best Director"]["Winner"] = getAwardWinnerPerson("", "Best Director:", best_director_list)
+results["Best Director"]["Presenters"] = []
+results["Best Director"]["Nominees"] = []
+
+results["Best Actress - Drama"] = {}
+results["Best Actress - Drama"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Drama:", best_drama_actress_list)
+results["Best Actress - Drama"]["Presenters"] = []
+results["Best Actress - Drama"]["Nominees"] = []
+
+results["Best Actor - Drama"] = {}
+results["Best Actor - Drama"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Drama:", best_drama_actor_list)
+results["Best Actor - Drama"]["Presenters"] = []
+results["Best Actor - Drama"]["Nominees"] = []
+
+results["Best Actress - Musical or Comedy:"] = {}
+results["Best Actress - Musical or Comedy:"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", best_comedy_actress_list)
+results["Best Actress - Musical or Comedy:"]["Nominees"] = []
+
+results["Best Actor - Musical or Comedy"] = {}
+results["Best Actor - Musical or Comedy"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", best_comedy_actor_list)
+results["Best Actor - Musical or Comedy"]["Presenters"] = []
+results["Best Actor - Musical or Comedy"]["Nominees"] = []
+
 
 getAwardWinnerPerson("", "Best Dressed:", best_dressed_list)
-
-
-from imdb import IMDb
-
-# create an instance of the IMDb class
-ia = IMDb()
-top_movies = ia.get_top250_movies()
-print ('Got top movies')
-recent_top_movies = []
-
-for movie in top_movies:
-	if (movie['year'] in [2013, 2014, 2015, 2016, 2017, 2018, 2019]):
-		recent_top_movies.append(movie)
-
-actors = []
-print ('Getting actors\n')
-for movie in recent_top_movies:
-	the_movie = ia.get_movie(movie.movieID)
-	if the_movie:
-		cast = the_movie.get('cast')
-		topActors = 8
-		for actor in cast[0:topActors]:
-			actors.append(actor['name'])
-
-# print (recent_top_movies)
-# print (actors)
-
 
 
 # textblob
 # TextBlob("I loved it")
 # blob.sent.sentiment
+
+# return the final results
+print ('\n')
+print (json.dumps(results))
