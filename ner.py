@@ -214,31 +214,31 @@ for tweet in df.head(6000).itertuples():
 # best performance by an actor in a mini-series or motion picture made for television
 # best performance by an actress in a mini-series or motion picture made for television
 
-	if "host" in text:
+	if all(word in text for word in ["host"]):
 		lists["host"]["winner"] += nouns
 
-	if "drama" in text and ("best motion picture" in text or "best picture" in text):
+	if all(word in text for word in ["drama"]) and any(word in text for word in ["best motion picture", "best picture"]):
 		lists["best motion picture - drama"]["winner"] += nouns
 
-	if "drama" in text and "actor" in text and ("performance" in text or "best performance" in text):
+	if all(word in text for word in ["drama", "actor"]) and any(word in text for word in ["performance", "best performance"]):
 		lists["best performance by an actor in a motion picture - drama"]["winner"] += nouns
-	if "drama" in text and "actress" in text and ("performance" in text or "best performance" in text):
+	if all(word in text for word in ["drama", "actress"]) and any(word in text for word in ["performance", "best performance"]):
 		lists["best performance by an actress in a motion picture - drama"]["winner"] += nouns
 
-	if "comedy" in text and ("best motion picture" in text or "best picture" in text):
+	if all(word in text for word in ["comedy"]) and any(word in text for word in ["best motion picture", "best picture"]):
 		lists["best motion picture - comedy or musical"]["winner"] += nouns
 
-	if "best" in text and "actor" in text and ("supporting" in text or "supporting role" in text):
+	if all(word in text for word in ["best", "actor"]) and any(word in text for word in ["supporting", "supporting role"]):
 		lists["best performance by an actor in a supporting role in a motion picture"]["winner"] += nouns
-	if "best" in text and "actress" in text and ("supporting" in text or "supporting role" in text):
+	if all(word in text for word in ["best", "actress"]) and any(word in text for word in ["supporting", "supporting role"]):
 		lists["best performance by an actress in a supporting role in a motion picture"]["winner"] += nouns
 
-	if "best" in text and ("director" in text or "best director" in text):
+	if all(word in text for word in ["best", "director"]):
 		lists["best director - motion picture"]["winner"] += nouns
 
-	if "actress" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
+	if all(word in text for word in ["best", "actress"]) and any(word in text for word in ["comedy", "musical"]) and "television" not in text:
 		lists["best performance by an actress in a motion picture - comedy or musical"]["winner"] += nouns
-	if "actor" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
+	if all(word in text for word in ["best", "actor"]) and any(word in text for word in ["comedy", "musical"]) and "television" not in text:
 		lists["best performance by an actor in a motion picture - comedy or musical"]["winner"] += nouns
 
 	if "dressed" in text and "best" in text:
@@ -249,10 +249,10 @@ results = {}
 
 results["Host"] = getAwardWinnerPerson("", "Host:", lists["host"]["winner"])
 
-results["Best Motion Picture - Drama"] = {}
-results["Best Motion Picture - Drama"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Drama:", lists["best motion picture - drama"]["winner"])
-results["Best Motion Picture - Drama"]["Presenters"] = []
-results["Best Motion Picture - Drama"]["Nominees"] = []
+results["best motion picture - drama"] = {}
+results["best motion picture - drama"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Drama:", lists["best motion picture - drama"]["winner"])
+results["best motion picture - drama"]["Presenters"] = []
+results["best motion picture - drama"]["Nominees"] = []
 
 results["best motion picture - comedy or musical"] = {}
 results["best motion picture - comedy or musical"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Comedy:", lists["best motion picture - comedy or musical"]["winner"])
@@ -341,4 +341,5 @@ getAwardWinnerPerson("", "Best Dressed:", best_dressed_list)
 
 # return the final results
 print ('\n')
-print (json.dumps(results))
+# print (json.dumps(results))
+print (results)
