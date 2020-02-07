@@ -187,10 +187,10 @@ results["Best Actor - Supporting Role"]["Winner"] = getAwardWinnerPerson("", "Be
 results["Best Actor - Supporting Role"]["Presenters"] = []
 results["Best Actor - Supporting Role"]["Nominees"] = []
 
-results["Best Director"] = {}
-results["Best Director"]["Winner"] = getAwardWinnerPerson("", "Best Director:", best_director_list)
-results["Best Director"]["Presenters"] = []
-results["Best Director"]["Nominees"] = []
+results["Best Director - Motion Picture"] = {}
+results["Best Director - Motion Picture"]["Winner"] = getAwardWinnerPerson("", "Best Director:", best_director_list)
+results["Best Director - Motion Picture"]["Presenters"] = []
+results["Best Director - Motion Picture"]["Nominees"] = []
 
 results["Best Actress - Drama"] = {}
 results["Best Actress - Drama"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Drama:", best_drama_actress_list)
@@ -211,6 +211,33 @@ results["Best Actor - Musical or Comedy"]["Winner"] = getAwardWinnerPerson("", "
 results["Best Actor - Musical or Comedy"]["Presenters"] = []
 results["Best Actor - Musical or Comedy"]["Nominees"] = []
 
+
+# best screenplay - motion picture
+# best director - motion picture
+# best performance by an actress in a television series - comedy or musical
+# best foreign language film
+# best performance by an actor in a supporting role in a motion picture
+# best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
+# best motion picture - comedy or musical
+# best performance by an actress in a motion picture - comedy or musical
+# best mini-series or motion picture made for television
+# best original score - motion picture
+# best performance by an actress in a television series - drama
+# best performance by an actress in a motion picture - drama
+# cecil b. demille award
+# best performance by an actor in a motion picture - comedy or musical
+# best motion picture - drama
+# best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
+# best performance by an actress in a supporting role in a motion picture
+# best television series - drama
+# best performance by an actor in a mini-series or motion picture made for television
+# best performance by an actress in a mini-series or motion picture made for television
+# best animated feature film
+# best original song - motion picture
+# best performance by an actor in a motion picture - drama
+# best television series - comedy or musical
+# best performance by an actor in a television series - drama
+# best performance by an actor in a television series - comedy or musical
 
 getAwardWinnerPerson("", "Best Dressed:", best_dressed_list)
 
