@@ -73,8 +73,57 @@ def getAwardWinnerMovie(award, title, relevant_list):
 	print(title, best)
 	return best
 
+lists = {}
+# Host list
+lists["host"] = {}
+# Best director lists
+lists["best director - motion picture"] = {}
+# Random best lists
+lists["best screenplay - motion picture"] = {}
+lists["best original score - motion picture"] = {}
+lists["best foreign language film"] = {}
+lists["best animated feature film"] = {}
+lists["best original song - motion picture"] = {}
+# 
+lists["cecil b. demille award"] = {}
+# 
+lists["best motion picture - drama"] = {}
+lists["best motion picture - comedy or musical"] = {}
 
-host_list = []
+lists["best television series - drama"] = {}
+lists["best television series - comedy or musical"] = {}
+# 
+lists["best mini-series or motion picture made for television"] = {}
+
+# Best performance lists
+lists["best performance by an actress in a motion picture - comedy or musical"] = {}
+lists["best performance by an actor in a motion picture - comedy or musical"] = {}
+
+lists["best performance by an actor in a television series - comedy or musical"] = {}
+lists["best performance by an actress in a television series - comedy or musical"] = {}
+
+lists["best performance by an actor in a supporting role in a motion picture"] = {}
+lists["best performance by an actress in a supporting role in a motion picture"] = {}
+
+lists["best performance by an actor in a supporting role in a series, mini-series or motion picture made for television"] = {}
+lists["best performance by an actress in a supporting role in a series, mini-series or motion picture made for television"] = {}
+
+lists["best performance by an actor in a mini-series or motion picture made for television"] = {}
+lists["best performance by an actress in a mini-series or motion picture made for television"] = {}
+
+lists["best performance by an actor in a motion picture - drama"] = {}
+lists["best performance by an actress in a motion picture - drama"] = {}
+
+lists["best performance by an actor in a television series - drama"] = {}
+lists["best performance by an actress in a television series - drama"] = {}
+
+# Initialize all the different kinds of fields for each award
+for key in lists:
+	lists[key]["winner"] = []
+	lists[key]["nominees"] = []
+	lists[key]["presenters"] = []
+
+
 master_name_list = []
 master_award_list = []
 master_nominee_list = []
@@ -120,44 +169,77 @@ for tweet in df.head(6000).itertuples():
 	text = text.lower()
 
 	# build up our lists
-	if "winner" in text:
-		master_winner_list += nouns
+	# if "winner" in text:
+	# 	master_winner_list += nouns
 
-	if "nominee" in text:
-		master_nominee_list += nouns
+	# if "nominee" in text:
+	# 	master_nominee_list += nouns
 
-	if "award" in text:
-		master_award_list += nouns
+	# if "award" in text:
+	# 	master_award_list += nouns
+
+# best screenplay - motion picture
+# best director - motion picture
+# best original score - motion picture
+# best motion picture - drama
+# best original song - motion picture
+# best motion picture - comedy or musical
+# best animated feature film
+
+# best foreign language film
+# best mini-series or motion picture made for television
+# cecil b. demille award
+
+# best television series - drama
+# best television series - comedy or musical
+
+# best performance by an actress in a motion picture - comedy or musical
+# best performance by an actor in a motion picture - comedy or musical
+
+# best performance by an actress in a television series - comedy or musical
+# best performance by an actor in a television series - comedy or musical
+
+# best performance by an actor in a supporting role in a motion picture
+# best performance by an actress in a supporting role in a motion picture
+
+# best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
+# best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
+
+# best performance by an actress in a motion picture - drama
+# best performance by an actor in a motion picture - drama
+
+# best performance by an actress in a television series - drama
+# best performance by an actor in a television series - drama
+
+# best performance by an actor in a mini-series or motion picture made for television
+# best performance by an actress in a mini-series or motion picture made for television
 
 	if "host" in text:
-		host_list += nouns
+		lists["host"]["winner"] += nouns
 
 	if "drama" in text and ("best motion picture" in text or "best picture" in text):
-		best_drama_picture_list += nouns
+		lists["best motion picture - drama"]["winner"] += nouns
 
 	if "drama" in text and "actor" in text and ("performance" in text or "best performance" in text):
-		best_drama_actor_list += nouns
-
+		lists["best performance by an actor in a motion picture - drama"]["winner"] += nouns
 	if "drama" in text and "actress" in text and ("performance" in text or "best performance" in text):
-		best_drama_actress_list += nouns
+		lists["best performance by an actress in a motion picture - drama"]["winner"] += nouns
 
 	if "comedy" in text and ("best motion picture" in text or "best picture" in text):
-		best_comedy_picture_list += nouns
+		lists["best motion picture - comedy or musical"]["winner"] += nouns
 
 	if "best" in text and "actor" in text and ("supporting" in text or "supporting role" in text):
-		best_supporting_role_list += nouns
-
+		lists["best performance by an actor in a supporting role in a motion picture"]["winner"] += nouns
 	if "best" in text and "actress" in text and ("supporting" in text or "supporting role" in text):
-		best_supporting_actress_list += nouns
+		lists["best performance by an actress in a supporting role in a motion picture"]["winner"] += nouns
 
 	if "best" in text and ("director" in text or "best director" in text):
-		best_director_list += nouns
+		lists["best director - motion picture"]["winner"] += nouns
 
 	if "actress" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
-		best_comedy_actress_list += nouns
-
+		lists["best performance by an actress in a motion picture - comedy or musical"]["winner"] += nouns
 	if "actor" in text and "best" in text and ("comedy" in text or "musical" in text) and "television" not in text:
-		best_comedy_actor_list += nouns
+		lists["best performance by an actor in a motion picture - comedy or musical"]["winner"] += nouns
 
 	if "dressed" in text and "best" in text:
 		best_dressed_list += nouns
@@ -165,79 +247,90 @@ for tweet in df.head(6000).itertuples():
 
 results = {}
 
-results["Host"] = getAwardWinnerPerson("", "Host:", host_list)
+results["Host"] = getAwardWinnerPerson("", "Host:", lists["host"]["winner"])
 
 results["Best Motion Picture - Drama"] = {}
-results["Best Motion Picture - Drama"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Drama:", best_drama_picture_list)
+results["Best Motion Picture - Drama"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Drama:", lists["best motion picture - drama"]["winner"])
 results["Best Motion Picture - Drama"]["Presenters"] = []
 results["Best Motion Picture - Drama"]["Nominees"] = []
 
-results["Best Motion Picture - Comedy"] = {}
-results["Best Motion Picture - Comedy"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Comedy:", best_comedy_picture_list)
-results["Best Motion Picture - Comedy"]["Presenters"] = []
-results["Best Motion Picture - Comedy"]["Nominees"] = []
+results["best motion picture - comedy or musical"] = {}
+results["best motion picture - comedy or musical"]["Winner"] = getAwardWinnerMovie("", "Best Picture - Comedy:", lists["best motion picture - comedy or musical"]["winner"])
+results["best motion picture - comedy or musical"]["Presenters"] = []
+results["best motion picture - comedy or musical"]["Nominees"] = []
 
-results["Best Actress - Supporting Role"] = {}
-results["Best Actress - Supporting Role"]["Winner"] = getAwardWinnerPerson("", "Best Actress in a Supporting Role:", best_supporting_actress_list)
-results["Best Actress - Supporting Role"]["Presenters"] = []
-results["Best Actress - Supporting Role"]["Nominees"] = []
+results["best performance by an actress in a supporting role in a motion picture"] = {}
+results["best performance by an actress in a supporting role in a motion picture"]["Winner"] = getAwardWinnerPerson("", "Best Actress in a Supporting Role:", lists["best performance by an actress in a supporting role in a motion picture"]["winner"])
+results["best performance by an actress in a supporting role in a motion picture"]["Presenters"] = []
+results["best performance by an actress in a supporting role in a motion picture"]["Nominees"] = []
 
-results["Best Actor - Supporting Role"] = {}
-results["Best Actor - Supporting Role"]["Winner"] = getAwardWinnerPerson("", "Best Actor in a Supporting Role:", best_supporting_role_list)
-results["Best Actor - Supporting Role"]["Presenters"] = []
-results["Best Actor - Supporting Role"]["Nominees"] = []
+results["best performance by an actor in a supporting role in a motion picture"] = {}
+results["best performance by an actor in a supporting role in a motion picture"]["Winner"] = getAwardWinnerPerson("", "Best Actor in a Supporting Role:", lists["best performance by an actor in a supporting role in a motion picture"]["winner"])
+results["best performance by an actor in a supporting role in a motion picture"]["Presenters"] = []
+results["best performance by an actor in a supporting role in a motion picture"]["Nominees"] = []
 
-results["Best Director - Motion Picture"] = {}
-results["Best Director - Motion Picture"]["Winner"] = getAwardWinnerPerson("", "Best Director:", best_director_list)
-results["Best Director - Motion Picture"]["Presenters"] = []
-results["Best Director - Motion Picture"]["Nominees"] = []
+results["best director - motion picture"] = {}
+results["best director - motion picture"]["Winner"] = getAwardWinnerPerson("", "Best Director:", lists["best director - motion picture"]["winner"])
+results["best director - motion picture"]["Presenters"] = []
+results["best director - motion picture"]["Nominees"] = []
 
-results["Best Actress - Drama"] = {}
-results["Best Actress - Drama"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Drama:", best_drama_actress_list)
-results["Best Actress - Drama"]["Presenters"] = []
-results["Best Actress - Drama"]["Nominees"] = []
+results["best performance by an actress in a motion picture - drama"] = {}
+results["best performance by an actress in a motion picture - drama"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Drama:", lists["best performance by an actress in a motion picture - drama"]["winner"])
+results["best performance by an actress in a motion picture - drama"]["Presenters"] = []
+results["best performance by an actress in a motion picture - drama"]["Nominees"] = []
 
-results["Best Actor - Drama"] = {}
-results["Best Actor - Drama"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Drama:", best_drama_actor_list)
-results["Best Actor - Drama"]["Presenters"] = []
-results["Best Actor - Drama"]["Nominees"] = []
+results["best performance by an actor in a motion picture - drama"] = {}
+results["best performance by an actor in a motion picture - drama"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Drama:", lists["best performance by an actor in a motion picture - drama"]["winner"])
+results["best performance by an actor in a motion picture - drama"]["Presenters"] = []
+results["best performance by an actor in a motion picture - drama"]["Nominees"] = []
 
-results["Best Actress - Musical or Comedy:"] = {}
-results["Best Actress - Musical or Comedy:"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", best_comedy_actress_list)
-results["Best Actress - Musical or Comedy:"]["Nominees"] = []
+results["best performance by an actress in a motion picture - comedy or musical"] = {}
+results["best performance by an actress in a motion picture - comedy or musical"]["Winner"] = getAwardWinnerPerson("", "Best Actress - Musical or Comedy:", lists["best performance by an actress in a motion picture - comedy or musical"]["winner"])
+results["best performance by an actress in a motion picture - comedy or musical"]["Nominees"] = []
 
-results["Best Actor - Musical or Comedy"] = {}
-results["Best Actor - Musical or Comedy"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", best_comedy_actor_list)
-results["Best Actor - Musical or Comedy"]["Presenters"] = []
-results["Best Actor - Musical or Comedy"]["Nominees"] = []
+results["best performance by an actor in a motion picture - comedy or musical"] = {}
+results["best performance by an actor in a motion picture - comedy or musical"]["Winner"] = getAwardWinnerPerson("", "Best Actor - Musical or Comedy:", lists["best performance by an actor in a motion picture - comedy or musical"]["winner"])
+results["best performance by an actor in a motion picture - comedy or musical"]["Presenters"] = []
+results["best performance by an actor in a motion picture - comedy or musical"]["Nominees"] = []
 
 
 # best screenplay - motion picture
 # best director - motion picture
-# best performance by an actress in a television series - comedy or musical
-# best foreign language film
-# best performance by an actor in a supporting role in a motion picture
-# best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
-# best motion picture - comedy or musical
-# best performance by an actress in a motion picture - comedy or musical
-# best mini-series or motion picture made for television
 # best original score - motion picture
-# best performance by an actress in a television series - drama
-# best performance by an actress in a motion picture - drama
-# cecil b. demille award
-# best performance by an actor in a motion picture - comedy or musical
 # best motion picture - drama
-# best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
-# best performance by an actress in a supporting role in a motion picture
+# best original song - motion picture
+# best motion picture - comedy or musical
+# best animated feature film
+
+# best foreign language film
+# best mini-series or motion picture made for television
+# cecil b. demille award
+
 # best television series - drama
+# best television series - comedy or musical
+
+# best performance by an actress in a motion picture - comedy or musical
+# best performance by an actor in a motion picture - comedy or musical
+
+# best performance by an actress in a television series - comedy or musical
+# best performance by an actor in a television series - comedy or musical
+
+# best performance by an actor in a supporting role in a motion picture
+# best performance by an actress in a supporting role in a motion picture
+
+# best performance by an actress in a supporting role in a series, mini-series or motion picture made for television
+# best performance by an actor in a supporting role in a series, mini-series or motion picture made for television
+
+# best performance by an actress in a motion picture - drama
+# best performance by an actor in a motion picture - drama
+
+# best performance by an actress in a television series - drama
+# best performance by an actor in a television series - drama
+
 # best performance by an actor in a mini-series or motion picture made for television
 # best performance by an actress in a mini-series or motion picture made for television
-# best animated feature film
-# best original song - motion picture
-# best performance by an actor in a motion picture - drama
-# best television series - comedy or musical
-# best performance by an actor in a television series - drama
-# best performance by an actor in a television series - comedy or musical
+
+
 
 getAwardWinnerPerson("", "Best Dressed:", best_dressed_list)
 
