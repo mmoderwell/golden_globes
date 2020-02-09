@@ -45,11 +45,12 @@ def getProperNouns(text):
 skip_list = ["Golden", "Globes", "Golden Globes", "Host", "Hollywood", "Golden Globe", 
 "Best", "Comedy", "Best Picture", "Best Motion Picture", "Actor", "Actress", "Film", 
 "Motion Picture", "Motion", "Performance", "Drama", "Comedy", "Director", "Musical", 
-"Best Performance", "Annual Golden Globe Awards", "Best Director", "BEST PICTURE", 
+"Best Performance", "Annual Golden Globe Awards", "Golden Globe Awards", "Best Director", "BEST PICTURE", 
 "Look", "Btw", "’", "2015", "2016", "2017", "2018", "2019", "Best Actor", "Best Actress",
- "Golden Globes 2020", "2020 Golden Globes"]
+ "Golden Globes 2020", "2020 Golden Globes", "Best Original Score", "Best Original Song",
+ "Best Foreign Language Film"]
 
-def getAwardWinnerPerson(award, title, relevant_list):
+def getWinnerPerson(title, relevant_list):
 	aCounter = Counter(relevant_list)
 	most_occur = aCounter.most_common(20)
 	results = []
@@ -64,7 +65,37 @@ def getAwardWinnerPerson(award, title, relevant_list):
 	print(title, best)
 	return best
 
-def getAwardWinnerMovie(award, title, relevant_list):
+def getNomineesPerson(title, relevant_list):
+	aCounter = Counter(relevant_list)
+	most_occur = aCounter.most_common(20)
+	results = []
+	for word in most_occur:
+		if word[0] not in skip_list and not word[0].isnumeric():
+			results.append(word[0])
+
+	try:
+		best = results[0:5]
+	except:
+		best = ['Unknown']
+	print(title, best)
+	return best
+
+def getPresenters(title, relevant_list):
+	aCounter = Counter(relevant_list)
+	most_occur = aCounter.most_common(20)
+	results = []
+	for word in most_occur:
+		if word[0] not in skip_list and not word[0].isnumeric():
+			results.append(word[0])
+
+	try:
+		best = results[0:2]
+	except:
+		best = ['Unknown']
+	print(title, best)
+	return best
+
+def getWinnerMovie(title, relevant_list):
 	aCounter = Counter(relevant_list)
 	most_occur = aCounter.most_common(20)
 	results = []
@@ -78,6 +109,22 @@ def getAwardWinnerMovie(award, title, relevant_list):
 		best = 'Unknown'
 	print(title, best)
 	return best
+
+def getNomineesMovie(title, relevant_list):
+	aCounter = Counter(relevant_list)
+	most_occur = aCounter.most_common(20)
+	results = []
+	for word in most_occur:
+		if word[0] not in skip_list:
+			results.append(word[0])
+
+	try:
+		best = results[0:5]
+	except:
+		best = ['Unknown']
+	print(title, best)
+	return best
+
 
 lists = {}
 
@@ -122,10 +169,7 @@ for award in awards:
 	lists[award]["nominees"] = []
 	lists[award]["presenters"] = []
 
-
-best_dressed_list = []
-
-for tweet in df.head(10000).itertuples():
+for tweet in df.head(50000).itertuples():
 	text = tweet[3]
 
 	# pull out the urls and remove them
@@ -154,76 +198,163 @@ for tweet in df.head(10000).itertuples():
 	if all(word in text for word in []) and any(word in text for word in ["winner", "awarded", "cecil", "demille"]):
 		lists["cecil b. demille award"]["winner"] += nouns
 
-	if all(word in text for word in ["screenplay", "best"]) and any(word in text for word in ["motion", "picture", "winner", "motion", "picture"]):
-		lists["best screenplay - motion picture"]["winner"] += nouns
+	# if all(word in text for word in ["screenplay", "best"]) and any(word in text for word in ["motion", "picture", "winner", "motion", "picture"]):
+	# 	lists["best screenplay - motion picture"]["winner"] += nouns
 
-	if all(word in text for word in ["original", "score", "best"]) and any(word in text for word in ["motion", "picture", "winner", "awarded"]):
-		lists["best original score - motion picture"]["winner"] += nouns
+	# if all(word in text for word in ["original", "score", "best"]) and any(word in text for word in ["motion", "picture", "winner", "awarded"]):
+	# 	lists["best original score - motion picture"]["winner"] += nouns
 
-	if all(word in text for word in ["original", "song", "best"]) and any(word in text for word in ["motion", "picture", "winner", "awarded"]):
-		lists["best original song - motion picture"]["winner"] += nouns
+	# if all(word in text for word in ["original", "song", "best"]) and any(word in text for word in ["motion", "picture", "winner", "awarded"]):
+	# 	lists["best original song - motion picture"]["winner"] += nouns
 
-	if all(word in text for word in ["animated", "best"]) and any(word in text for word in ["film", "winner", "feature"]):
-		lists["best animated feature film"]["winner"] += nouns
+	# if all(word in text for word in ["animated", "best"]) and any(word in text for word in ["film", "winner", "feature"]):
+	# 	lists["best animated feature film"]["winner"] += nouns
 
-	if all(word in text for word in ["foreign", "best", "film"]) and any(word in text for word in ["winner", "language"]):
-		lists["best foreign language film"]["winner"] += nouns
+	# if all(word in text for word in ["foreign", "best", "film"]) and any(word in text for word in ["winner", "language"]):
+	# 	lists["best foreign language film"]["winner"] += nouns
 
-	if all(word in text for word in ["best"]) and any(word in text for word in ["mini", "tv", "television", "winner", "mini-series"]):
-		lists["best mini-series or motion picture made for television"]["winner"] += nouns
+	# if all(word in text for word in ["best"]) and any(word in text for word in ["mini", "tv", "television", "winner", "mini-series"]):
+	# 	lists["best mini-series or motion picture made for television"]["winner"] += nouns
 
-	if all(word in text for word in ["drama", "best", "series"]) and any(word in text for word in ["tv", "television", "winner"]):
-		lists["best television series - drama"]["winner"] += nouns
+	# if all(word in text for word in ["drama", "best", "series"]) and any(word in text for word in ["tv", "television", "winner"]):
+	# 	lists["best television series - drama"]["winner"] += nouns
 
-	# if all(word in text for word in [""]) and any(word in text for word in [""]):
-	# 	lists[""]["winner"] += nouns
+	# # if all(word in text for word in [""]) and any(word in text for word in [""]):
+	# # 	lists[""]["winner"] += nouns
 
-		
-	if all(word in text for word in ["drama"]) and any(word in text for word in ["best motion picture", "best picture"]):
-		lists["best motion picture - drama"]["winner"] += nouns
+	# if all(word in text for word in ["drama"]) and any(word in text for word in ["best motion picture", "best picture"]):
+	# 	lists["best motion picture - drama"]["winner"] += nouns
 
-	if all(word in text for word in ["drama", "actor"]) and any(word in text for word in ["performance", "best performance"]):
-		lists["best performance by an actor in a motion picture - drama"]["winner"] += nouns
-	if all(word in text for word in ["drama", "actress"]) and any(word in text for word in ["performance", "best performance"]):
-		lists["best performance by an actress in a motion picture - drama"]["winner"] += nouns
+	# if all(word in text for word in ["drama", "actor"]) and any(word in text for word in ["performance", "best performance"]):
+	# 	lists["best performance by an actor in a motion picture - drama"]["winner"] += nouns
+	# if all(word in text for word in ["drama", "actress"]) and any(word in text for word in ["performance", "best performance"]):
+	# 	lists["best performance by an actress in a motion picture - drama"]["winner"] += nouns
 
-	if all(word in text for word in ["comedy"]) and any(word in text for word in ["best motion picture", "best picture"]):
-		lists["best motion picture - comedy or musical"]["winner"] += nouns
+	# if all(word in text for word in ["comedy"]) and any(word in text for word in ["best motion picture", "best picture"]):
+	# 	lists["best motion picture - comedy or musical"]["winner"] += nouns
 
-	if all(word in text for word in ["best", "actor"]) and any(word in text for word in ["supporting", "supporting role"]):
-		lists["best performance by an actor in a supporting role in a motion picture"]["winner"] += nouns
-	if all(word in text for word in ["best", "actress"]) and any(word in text for word in ["supporting", "supporting role"]):
-		lists["best performance by an actress in a supporting role in a motion picture"]["winner"] += nouns
+	# if all(word in text for word in ["best", "actor"]) and any(word in text for word in ["supporting", "supporting role"]):
+	# 	lists["best performance by an actor in a supporting role in a motion picture"]["winner"] += nouns
+	# if all(word in text for word in ["best", "actress"]) and any(word in text for word in ["supporting", "supporting role"]):
+	# 	lists["best performance by an actress in a supporting role in a motion picture"]["winner"] += nouns
 
-	if all(word in text for word in ["best", "director"]):
-		lists["best director - motion picture"]["winner"] += nouns
+	# if all(word in text for word in ["best", "director"]):
+	# 	lists["best director - motion picture"]["winner"] += nouns
 
-	if all(word in text for word in ["best", "actress"]) and any(word in text for word in ["comedy", "musical"]) and "television" not in text:
-		lists["best performance by an actress in a motion picture - comedy or musical"]["winner"] += nouns
-	if all(word in text for word in ["best", "actor"]) and any(word in text for word in ["comedy", "musical"]) and "television" not in text:
-		lists["best performance by an actor in a motion picture - comedy or musical"]["winner"] += nouns
+	# if all(word in text for word in ["best", "actress"]) and any(word in text for word in ["comedy", "musical"]) and "television" not in text:
+	# 	lists["best performance by an actress in a motion picture - comedy or musical"]["winner"] += nouns
+	# if all(word in text for word in ["best", "actor"]) and any(word in text for word in ["comedy", "musical"]) and "television" not in text:
+	# 	lists["best performance by an actor in a motion picture - comedy or musical"]["winner"] += nouns
 
-	if "dressed" in text and "best" in text:
-		best_dressed_list += nouns
-		# print (text, '\n')
+
+	# Words to remove when parsing award title to make lists
+	stop_words = ["by", "an", "in", "a", "-", "or"]
+
+	# build up the lists for each award
+	# can optionally do it manually and exclude from this part
+	for award in [award for award in awards if award not in ["cecil b. demille award"]]:
+		# print (award)
+		split = award.split("-")
+		try:
+			key_needed = list(filter(lambda s: s not in stop_words, split[0].split()))
+			key_maybes = list(filter(lambda s: s not in stop_words, split[1].split()))
+		except:
+			key_needed = list(filter(lambda s: s not in stop_words, split[0].split()))
+			key_maybes = list(filter(lambda s: s not in stop_words, split[0].split()))
+
+		key_words = list(filter(lambda s: s not in stop_words, award.split()))
+
+		key_needed = [word.lstrip().rstrip() for word in key_needed]
+		key_maybes = [word.lstrip().rstrip() for word in key_maybes]
+		key_words = [word.lstrip().rstrip() for word in key_words]
+	
+		def winners():
+			# set of words that need to be in tweet
+			needed = set()
+			# set of words where one or more could be in tweet
+			maybe = set()
+			# #  if an award is for actor
+			# if (any(word in award for word in ["actor"])):
+			# 	needed.update(["actor", "best"])
+			# 	maybe.update(key_words)
+
+			# # award for an actress
+			# if (any(word in award for word in ["actress"])):
+			# 	needed.update(["actress", "best"])
+			# 	maybe.update(key_words)
+
+			# if (any(word in award for word in ["television"])):
+			# 	# needed += {"television"}
+			# 	maybe.update(key_words)
+			# 	maybe.update(["television", "tv"])
+
+			# if (any(word in award for word in ["television"])):
+			# 	maybe.update(key_words)
+
+
+			maybe.update(key_maybes)
+			needed.update(key_needed)
+
+			if all(word in text for word in needed) and any(word in text for word in maybe):
+				lists[award]["winner"] += nouns
+
+
+		def nominees():
+			# set of words that need to be in tweet
+			needed = set()
+			# set of words where one or more could be in tweet
+			maybe = set()
+
+			# maybe.update(key_words)
+			maybe.update(["nominated", "nominees"])
+
+			# needed.update(key_words[0:4])
+			# needed.update(["nominee"])
+
+			# maybe.update(key_maybes)
+			needed.update(key_needed)
+			
+			if all(word in text for word in needed) and any(word in text for word in maybe):
+				lists[award]["nominees"] += nouns
+
+		def presenters():
+			# set of words that need to be in tweet
+			needed = set()
+			# set of words where one or more could be in tweet
+			maybe = set()
+
+			# maybe.update(key_words)
+			maybe.update(["presenters", "present", "presented"])
+
+			# needed.update(key_words[0:4])
+			needed.update(key_needed)
+			# needed.update(["presented"])
+
+			if all(word in text for word in needed) and any(word in text for word in maybe):
+				lists[award]["winner"] += nouns
+
+		winners()
+		nominees()
+		presenters()
+
 
 results = {}
-results["Host"] = getAwardWinnerPerson("", "Host:", lists["host"]["winner"])
+results["Host"] = getWinnerPerson("Host:", lists["host"]["winner"])
 
 # Assign awards to the results dict
 for award in awards:
 	# person awardee
 	if (any(word in award for word in ["actor", "actress"])):
 		results[award] = {}
-		results[award]["Winner"] = getAwardWinnerPerson("", f"{award}:", lists[award]["winner"])
-		results[award]["Presenters"] = []
-		results[award]["Nominees"] = []
+		results[award]["Winner"] = getWinnerPerson(f"{award} winner:", lists[award]["winner"])
+		results[award]["Presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
+		results[award]["Nominees"] = getNomineesPerson(f"{award} nominees:", lists[award]["nominees"])
 	# movie or tv show awardee
 	else:
 		results[award] = {}
-		results[award]["Winner"] = getAwardWinnerMovie("", f"{award}:", lists[award]["winner"])
-		results[award]["Presenters"] = []
-		results[award]["Nominees"] = []
+		results[award]["Winner"] = getWinnerMovie(f"{award} winner:", lists[award]["winner"])
+		results[award]["Presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
+		results[award]["Nominees"] = getNomineesMovie(f"{award} nominees:", lists[award]["nominees"])
 
 
 # best screenplay - motion picture
@@ -261,11 +392,6 @@ for award in awards:
 
 # best performance by an actor in a mini-series or motion picture made for television
 # best performance by an actress in a mini-series or motion picture made for television
-
-
-
-getAwardWinnerPerson("", "Best Dressed:", best_dressed_list)
-
 
 # textblob
 # TextBlob("I loved it")
