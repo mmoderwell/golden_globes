@@ -122,6 +122,18 @@ def getNomineesMovie(title, relevant_list):
 	print(title, best)
 	return best
 
+# def getJokes(text):
+    # jokes = []
+    # if '\"' in text:
+        # start_quote = text.find('\"')
+        # end_quote = text.find('\"', start_quote + 1)
+        # if start_quote != -1 and end_quote != 1:
+            # reaction = text[:start_quote] + text[end_quote+1:]
+            # if any(word in reaction for word in ['lol', 'lmao', 'joke', 'joked', 'funny', 'lmaooo', 'lmbo']):
+                # jokes.append(text[start_quote:end_quote])
+        # return jokes
+	
+
 
 def main(year):
 
@@ -201,6 +213,8 @@ def main(year):
 		nouns = getProperNouns(text)
 
 		text = text.lower()
+
+        # jokes = getJokes(text)
 
 		# Build up the lists
 		if all(word in text for word in ["host"]):
