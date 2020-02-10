@@ -285,7 +285,6 @@ def main(year):
 
 	results = {}
 	results["host"] = getWinnerPerson("Host:", lists["host"]["winner"])
-	results['award_data'] = {}
 	# replace with award name fetching list
 	results['awards'] = awards
 
