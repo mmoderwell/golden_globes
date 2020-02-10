@@ -297,12 +297,13 @@ def main(year):
 			presenters()
 
 
+	# build up the dict of the results
 	results = {}
 	results["host"] = getWinnerPerson("Host:", lists["host"]["winner"])
 	# replace with award name fetching list
 	results['awards'] = awards
 
-	# Assign awards to the results dict
+	# Assign each award to the results dict
 	for award in awards:
 		# person awardee
 		if (any(word in award for word in ["actor", "actress", "director", "cecil b. demille award", "cecil"])):
@@ -325,6 +326,7 @@ def main(year):
 	print (results)
 
 
+	# Write the results file to autograder folder to be tested
 	with open(f'./autograder/gg{year}results.json', 'w') as outfile:
 	    json.dump(results, outfile)
 	    print (f"Wrote gg{year}results.json")
