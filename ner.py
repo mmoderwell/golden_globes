@@ -293,16 +293,18 @@ def main(year):
 	for award in awards:
 		# person awardee
 		if (any(word in award for word in ["actor", "actress", "director", "cecil b. demille award", "cecil"])):
-			results['award_data'][award] = {}
-			results['award_data'][award]["winner"] = getWinnerPerson(f"{award} winner:", lists[award]["winner"])
-			results['award_data'][award]["presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
-			results['award_data'][award]["nominees"] = getNomineesPerson(f"{award} nominees:", lists[award]["nominees"])
+			results[award] = {}
+			results[award]['award_data'] = {}
+			results[award]['award_data']["winner"] = getWinnerPerson(f"{award} winner:", lists[award]["winner"])
+			results[award]['award_data']["presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
+			results[award]['award_data']["nominees"] = getNomineesPerson(f"{award} nominees:", lists[award]["nominees"])
 		# movie or tv show awardee
 		else:
-			results['award_data'][award] = {}
-			results['award_data'][award]["winner"] = getWinnerMovie(f"{award} winner:", lists[award]["winner"])
-			results['award_data'][award]["presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
-			results['award_data'][award]["nominees"] = getNomineesMovie(f"{award} nominees:", lists[award]["nominees"])
+			results[award] = {}
+			results[award]['award_data'] = {}
+			results[award]['award_data']["winner"] = getWinnerMovie(f"{award} winner:", lists[award]["winner"])
+			results[award]['award_data']["presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
+			results[award]['award_data']["nominees"] = getNomineesMovie(f"{award} nominees:", lists[award]["nominees"])
 
 	# return the final results
 	print ('\n')
