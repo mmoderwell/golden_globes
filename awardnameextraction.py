@@ -14,8 +14,10 @@ from nltk.corpus import stopwords
 
 
 #Can change this to what's in the ner.py file later
-url='http://drive.google.com/uc?export=view&id=1Ya7cxYANh-KDU7HfGmPPSR6wK7w1x1Tq'
-df2 = pd.read_json(url, orient='columns', lines=True)
+data_url = "./data/gg2020.json"
+df2 = pd.read_json(data_url, orient='columns', lines=True)
+#url='http://drive.google.com/uc?export=view&id=1Ya7cxYANh-KDU7HfGmPPSR6wK7w1x1Tq'
+#df2 = pd.read_json(url, orient='columns', lines=True)
 
 cleantable = str.maketrans('', '', string.punctuation)
 nltk.download('stopwords')
