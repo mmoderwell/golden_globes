@@ -298,7 +298,7 @@ def main(year):
 				if all(word in text for word in needed) and any(word in text for word in maybe):
 					lists[award]["winner"] += nouns
 					# sentiment analysis
-					for word in text:
+					#for word in text:
 
 
 
