@@ -145,6 +145,7 @@ def main(year):
 		df = pd.read_json(data_url)
 
 	print (df.shape)
+	year = int(year)
 
 	lists = {}
 
@@ -198,14 +199,16 @@ def main(year):
 		lists[award]["presenters"] = []
 
 	for tweet in df.sample(n = (min(df.shape[0], 175000))).itertuples():
-
+		#print(year)
 		if year == 2013 or year == 2015:
 			text = tweet.text
+			#print(type(text))
 		else:
 			text = tweet[3]
+			#print(type(text))
 
 		# pull out the urls and remove them
-		text = re.sub('http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', text)
+		text = re.sub(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', '', text)
 		# pull out the hashtags
 		hashtags = re.findall(r'(?i)\#\w+', text)
 		# take them out for now, can do something with them later

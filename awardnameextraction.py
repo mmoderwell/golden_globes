@@ -64,7 +64,7 @@ def diff(first, second):
         second = set(second)
         return [item for item in first if item not in second]
 
-common_awd_words = ['motion', 'picture', 'film', 'television', 'best']
+common_awd_words = ['motion', 'picture', 'film', 'television', 'best', 'actor', 'actress']
 
 def award_similarity(awd1, awd2):
   awd1_list = awd1.split()
@@ -124,11 +124,21 @@ def main(winner_list):
   allawards=[' '.join(awtuple[0]) for awtuple in return_arr]
   #print(allawards)
 
+  for winner in winner_list:
+    pull = False
+    for awd_word in common_awd_words:
+      if awd_word in winner:
+        pull = True
+        break
+    
+    if pull:
+      winner_list.remove(winner)
+
   new_awd_list = []
   for award_str in allawards:
     for winner in winner_list:
       winner = winner.lower()
-      if (winner in award_str) and (not("best" in winner)):
+      if (winner in award_str):
         award_str = award_str.replace(winner, '')
     award_str = award_str.strip()
     new_awd_list.append(award_str)
