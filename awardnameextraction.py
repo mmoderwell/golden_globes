@@ -17,8 +17,15 @@ import golden_globes
 #golden_globes.main(year)
 
 
-#Can change this to what's in the ner.py file later
-
+cleantable = str.maketrans('', '', string.punctuation)
+nltk.download('stopwords')
+cleanstop_words = set(stopwords.words('english'))
+cleanstop_words.add('golden')
+cleanstop_words.add('globes')
+cleanstop_words.add('globe')
+cleanstop_words.add('https')
+cleanstop_words.add('performance')
+cleanstop_words.add('via')
 #cleanstop_words.remove('in')
 # - do some common translations TV-Television
 def commonwords(inp):
@@ -84,15 +91,6 @@ def main(winner_list):
   #url='http://drive.google.com/uc?export=view&id=1Ya7cxYANh-KDU7HfGmPPSR6wK7w1x1Tq'
   #df2 = pd.read_json(url, orient='columns', lines=True)
 
-  cleantable = str.maketrans('', '', string.punctuation)
-  nltk.download('stopwords')
-  cleanstop_words = set(stopwords.words('english'))
-  cleanstop_words.add('golden')
-  cleanstop_words.add('globes')
-  cleanstop_words.add('globe')
-  cleanstop_words.add('https')
-  cleanstop_words.add('performance')
-  cleanstop_words.add('via')
   #clean tweets to list of token tuples
   sents = df2['text'].map(cleantweet).tolist()
 
