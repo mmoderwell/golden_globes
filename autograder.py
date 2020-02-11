@@ -211,15 +211,15 @@ def main(years, grading):
 
         answers['awards'] = list(answers['award_data'].keys())
 
-        try:
-            for g in grading:
-                if g in ['hosts', 'awards']:
-                    scores[y][g]['spelling'], scores[y][g]['completeness'] = score_unstructured(y, answers, g)
-                else:
-                    scores[y][g]['spelling'], scores[y][g]['completeness'] = score_structured(y, answers, g)
+        #try:
+        for g in grading:
+            if g in ['hosts', 'awards']:
+                scores[y][g]['spelling'], scores[y][g]['completeness'] = score_unstructured(y, answers, g)
+            else:
+                scores[y][g]['spelling'], scores[y][g]['completeness'] = score_structured(y, answers, g)
 
-        except:
-            print("An exception occurred")
+        #except:
+            #print("An exception occurred")
         if "winner" in grading:
             del scores[y]['winner']['completeness']
     pprint(scores)
