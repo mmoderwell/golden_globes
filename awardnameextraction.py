@@ -64,7 +64,7 @@ def diff(first, second):
         second = set(second)
         return [item for item in first if item not in second]
 
-common_awd_words = ['Motion', 'Picture', 'Film', 'Television', 'Best']
+common_awd_words = ['motion', 'picture', 'film', 'television', 'best']
 
 def award_similarity(awd1, awd2):
   awd1_list = awd1.split()
