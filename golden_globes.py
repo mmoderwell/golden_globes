@@ -4,8 +4,8 @@ import nltk
 import json
 import sys
 
-# Python program to find the k most frequent words from data set 
-from collections import Counter 
+# Python program to find the k most frequent words from data set
+from collections import Counter
 
 nltk.download('punkt')
 nltk.download('averaged_perceptron_tagger')
@@ -28,7 +28,7 @@ def getProperNouns(text):
 	answer  = [] # final answer
 	partial = [] # partial answer
 	for e in names:
-		if e == ':':           # if current element is an empty string … 
+		if e == ':':           # if current element is an empty string …
 			if partial:       # … and there's a partial answer
 				answer.append(' '.join(partial)) # join and append partial answer
 				partial = []  # reset partial answer
@@ -40,15 +40,15 @@ def getProperNouns(text):
 	return answer
 
 
-skip_list = ["Golden", "Globes", "Golden Globes", "Host", "Hollywood", "Golden Globe", 
-"Best", "Comedy", "Best Picture", "Best Motion Picture", "Actor", "Actress", "Film", 
-"Motion Picture", "Motion", "Performance", "Drama", "Comedy", "Director", "Musical", 
-"Best Performance", "Annual Golden Globe Awards", "Golden Globe Awards", "Best Director", "BEST PICTURE", 
+skip_list = ["Golden", "Globes", "Golden Globes", "Host", "Hollywood", "Golden Globe",
+"Best", "Comedy", "Best Picture", "Best Motion Picture", "Actor", "Actress", "Film",
+"Motion Picture", "Motion", "Performance", "Drama", "Comedy", "Director", "Musical",
+"Best Performance", "Annual Golden Globe Awards", "Golden Globe Awards", "Best Director", "BEST PICTURE",
 "Look", "Btw", "’", "2015", "2016", "2017", "2018", "2019", "2020", "Best Actor", "Best Actress",
- "Golden Globes 2020", "2020 Golden Globes", "Best Original Score", "Best Original Song",
+ "Golden Globes 2020", "Golden Globes 2013", "Golden Globes 2019", "Golden Globes 2017", "Golden Globes 2016", "2020 Golden Globes", "Best Original Score", "Best Original Song",
  "Best Foreign Language Film", "Television Series", "Oscars", "Oscar", "Best Screenplay", "Series",
  "Supporting Role", "Motion Picture Musical", "Movie", "Best Original Score WW", "Best Original Score",
- "Winner"]
+ "Winner", "Worst", "Best", "WTF", "WORST", "BEST", "COURSE"]
 
 def getWinnerPerson(title, relevant_list):
 	aCounter = Counter(relevant_list)
@@ -181,6 +181,14 @@ def main(year):
 	lists["host"] = {}
 	lists["host"]["winner"] = []
 
+	# best Dressed
+	lists["dressed"] = {}
+	lists["dressed"]["best"] = []
+	lists["dressed"]["worst"] = []
+	dressed = ["outfit", "dress", "dressed", "skirt", "shirt", "shoes", "tuxedo", "tux", "heels", "fashion"]
+	best = ["gorgeous", "stunning", "handsome", "perfect", "best", "beautiful", "style", "poise"]
+	worst = ["worst", "ugly", "worst-dressed", "worse", "boring", "bland", "bad", "wrong", "fail"]
+
 	# Initialize the lists for each award
 	for award in awards:
 		lists[award] = {}
@@ -209,7 +217,7 @@ def main(year):
 		text = re.sub(u'([\U00002600-\U000027BF])|([\U0001f300-\U0001f64F])|([\U0001f680-\U0001f6FF])', '', text)
 
 		titles = re.findall(r'^(.*)[\s]+[\s]?(.*)?', text)
-		
+
 		# get the proper nouns for the tweet
 		nouns = getProperNouns(text)
 
@@ -220,6 +228,11 @@ def main(year):
 		# Build up the lists
 		if all(word in text for word in ["host"]):
 			lists["host"]["winner"] += nouns
+
+		if any(word in text for word in dressed) and any(word in text for word in best):
+			lists["dressed"]["best"] += nouns
+		if any(word in text for word in dressed) and any(word in text for word in worst):
+			lists["dressed"]["worst"] += nouns
 
 		if all(word in text for word in []) and any(word in text for word in ["winner", "awarded", "cecil", "demille"]):
 			lists["cecil b. demille award"]["winner"] += nouns
@@ -246,7 +259,7 @@ def main(year):
 
 		# build up the lists for each award
 		# can optionally do it manually and exclude from this part
-		for award in [award for award in awards if award not in ["cecil b. demille award", 
+		for award in [award for award in awards if award not in ["cecil b. demille award",
 		"best performance by an actress in a supporting role in a series, mini-series or motion picture made for television",
 		"best performance by an actor in a supporting role in a series, mini-series or motion picture made for television"]]:
 			# print (award)
@@ -263,7 +276,7 @@ def main(year):
 			key_needed = [word.lstrip().rstrip() for word in key_needed]
 			key_maybes = [word.lstrip().rstrip() for word in key_maybes]
 			key_words = [word.lstrip().rstrip() for word in key_words]
-		
+
 			def winners():
 				# set of words that need to be in tweet
 				needed = set()
@@ -284,6 +297,9 @@ def main(year):
 
 				if all(word in text for word in needed) and any(word in text for word in maybe):
 					lists[award]["winner"] += nouns
+					# sentiment analysis
+					for word in text:
+
 
 
 			def nominees():
@@ -305,7 +321,7 @@ def main(year):
 				maybe.update(["nominated", "nominees"])
 
 				needed.update(key_needed[0:3])
-				
+
 				if all(word in text for word in needed) and any(word in text for word in maybe):
 					lists[award]["nominees"] += nouns
 
@@ -344,6 +360,11 @@ def main(year):
 	# replace with award name fetching list
 	results['awards'] = awards
 
+	#additional goals dict
+	additional_goals = {}
+	additional_goals["best dressed"] = getPresenters("Best Dressed:", lists["dressed"]["best"])
+	additional_goals["worst dressed"] = getPresenters("Worst Dressed:", lists["dressed"]["worst"])
+
 	# Assign each award to the results dict
 	for award in awards:
 		# person awardee
@@ -365,6 +386,8 @@ def main(year):
 	print ('\n')
 	# print (json.dumps(results))
 	print (results)
+	print('\n')
+	print(additional_goals)
 
 
 	# Write the results file to autograder folder to be tested
