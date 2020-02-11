@@ -1,4 +1,5 @@
 # golden_globes
+Matthew Moderwell, Paulina Tarasul, Nicholas Trucksis, Chloe Mueller
 
 To start developing, make sure you activate the virtual environment. Make sure pip and Python are version 3.
 	
