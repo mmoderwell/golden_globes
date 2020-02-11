@@ -359,12 +359,19 @@ def main(year):
 	results["host"] = getPresenters("Host:", lists["host"]["winner"])
 	# replace with award name fetching list
 	results['awards'] = awards
+	output_results = {}
+
+	#How to prevent printing
+	output_results['hosts'] = results["host"]
 
 	#additional goals dict
 	additional_goals = {}
 	additional_goals["best dressed"] = getPresenters("Best Dressed:", lists["dressed"]["best"])
 	additional_goals["worst dressed"] = getPresenters("Worst Dressed:", lists["dressed"]["worst"])
 
+	output_results['winners'] = {}
+	output_results['nominees'] = {}
+	output_results['presenters'] = {}
 	# Assign each award to the results dict
 	for award in awards:
 		# person awardee
@@ -374,6 +381,10 @@ def main(year):
 			results[award]['award_data']["winner"] = getWinnerPerson(f"{award} winner:", lists[award]["winner"])
 			results[award]['award_data']["presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
 			results[award]['award_data']["nominees"] = getNomineesPerson(f"{award} nominees:", lists[award]["nominees"])
+
+			output_results['winners'][award] = results[award]['award_data']["winner"]
+			output_results['nominees'][award] = results[award]['award_data']["nominees"]
+			output_results['presenters'][award] = results[award]['award_data']["presenters"]
 		# movie or tv show awardee
 		else:
 			results[award] = {}
@@ -381,6 +392,10 @@ def main(year):
 			results[award]['award_data']["winner"] = getWinnerMovie(f"{award} winner:", lists[award]["winner"])
 			results[award]['award_data']["presenters"] = getPresenters(f"{award} presenters:", lists[award]["presenters"])
 			results[award]['award_data']["nominees"] = getNomineesMovie(f"{award} nominees:", lists[award]["nominees"])
+
+			output_results['winners'][award] = results[award]['award_data']["winner"]
+			output_results['nominees'][award] = results[award]['award_data']["nominees"]
+			output_results['presenters'][award] = results[award]['award_data']["presenters"]
 
 	# return the final results
 	print ('\n')
@@ -394,8 +409,8 @@ def main(year):
 	with open(f'./autograder/gg{year}results.json', 'w') as outfile:
 		json.dump(results, outfile)
 		print (f"Wrote gg{year}results.json")
-		return
-
+	
+	return output_results
 if __name__ == '__main__':
 	if len(sys.argv) > 1:
 		year = int(sys.argv[1])

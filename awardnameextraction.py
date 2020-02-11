@@ -14,7 +14,7 @@ from nltk.corpus import stopwords
 
 import golden_globes
 
-golden_globes.main()
+#golden_globes.main(year)
 
 
 #Can change this to what's in the ner.py file later
